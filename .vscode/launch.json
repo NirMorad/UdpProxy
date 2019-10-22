@@ -1,0 +1,36 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["--experimental-modules"],
+            "name": "Launch Program with flags",
+            "program": "${workspaceFolder}/index.mjs"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["--experimental-modules"],
+            "name": "client",
+            "program": "${workspaceFolder}/test/client.mjs"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["--experimental-modules"],
+            "name": "client2",
+            "program": "${workspaceFolder}/test/client.mjs"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["--experimental-modules"],
+            "name": "mulitcastServer",
+            "program": "${workspaceFolder}/test/multicastTestServer.mjs"
+        }
+    ]
+}
