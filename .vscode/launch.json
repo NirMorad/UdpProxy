@@ -7,30 +7,34 @@
         {
             "type": "node",
             "request": "launch",
-            "runtimeArgs": ["--experimental-modules"],
             "name": "Launch Program with flags",
-            "program": "${workspaceFolder}/index.mjs"
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
+            "program": "${workspaceFolder}/index.ts"
         },
         {
             "type": "node",
             "request": "launch",
-            "runtimeArgs": ["--experimental-modules"],
             "name": "client",
-            "program": "${workspaceFolder}/test/client.mjs"
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
+            "program": "${workspaceFolder}/lib/client.ts"
         },
         {
             "type": "node",
             "request": "launch",
-            "runtimeArgs": ["--experimental-modules"],
             "name": "client2",
-            "program": "${workspaceFolder}/test/client.mjs"
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
+            "program": "${workspaceFolder}/lib/client.mts"
         },
         {
             "type": "node",
             "request": "launch",
-            "runtimeArgs": ["--experimental-modules"],
             "name": "mulitcastServer",
-            "program": "${workspaceFolder}/test/multicastTestServer.mjs"
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
+            "program": "${workspaceFolder}/lib/multicastTestServer.ts"
         }
     ]
 }

@@ -3,6 +3,8 @@ import http from "http";
 import sio from "socket.io";
 
 export class Proxy {
+  cache: {};
+
   constructor() {
     this.cache = {};
     let server = http.createServer();
@@ -11,21 +13,24 @@ export class Proxy {
     const io = so.of("/proxy");
     io.on("connect", socket => {
       this.bind(socket);
+      socket.on("disconnect",(reason) => {
+        console.log(socket);
+      });
     });
 
     server.listen(8080);
   }
 
-  bind(client) {
+  bind(client : any) {
     console.log(client);
    
     //bind client and udp socket messages events
-    client.on("internal", message => {
+    client.on("internal", (message: { port: any; ip: any; }) => {
       this.HandleBind(message, client);
     });
   }
 
-  HandleBind(message, client) {
+  HandleBind(message: { port: any; ip: any; }, client: any) {
     const port = message.port;
     const ip = message.ip;
     const key = ip + "-" + port;
@@ -42,7 +47,7 @@ export class Proxy {
     }
   
   }
-    createNewUdpBind(ip, clients, port) {
+    createNewUdpBind(ip: string, clients: any[], port: any) {
         var udp = dgram.createSocket("udp4", { reuseAddr: true });
         udp.on('listening', function () {
             var address = udp.address();
@@ -51,7 +56,7 @@ export class Proxy {
             udp.setMulticastTTL(64);
             udp.addMembership(ip);
         });
-        udp.on("message", function (msg, rinfo) {
+        udp.on("message", function (msg: string, rinfo: { address: any; port: any; }) {
             clients.forEach(clientHandler => {
                 clientHandler.emit("dgram-message", {
                     msg: msg.toString("ascii"),
