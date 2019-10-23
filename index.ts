@@ -1,12 +1,13 @@
-import dgram from "dgram";
+import dgram, { RemoteInfo } from "dgram";
 import http from "http";
 import sio from "socket.io";
+import { AddressInfo } from "net";
 
 export class Proxy {
-  cache: {};
+  cache: {[id:string]:[sio.Socket] };
 
   constructor() {
-    this.cache = {};
+    this.cache  = {};
     let server = http.createServer();
     let so = sio(server);
 
@@ -21,7 +22,7 @@ export class Proxy {
     server.listen(8080);
   }
 
-  bind(client : any) {
+  bind(client: sio.Socket) {
     console.log(client);
    
     //bind client and udp socket messages events
@@ -30,33 +31,33 @@ export class Proxy {
     });
   }
 
-  HandleBind(message: { port: any; ip: any; }, client: any) {
+  HandleBind(message: { port: any; ip: any; }, client: sio.Socket) {
     const port = message.port;
     const ip = message.ip;
     const key = ip + "-" + port;
     
-    let clients = [];
+    let clients : [sio.Socket] ;
     if (this.cache[key]) {
         clients = this.cache[key];
         clients.push(client);
     }else {
         //create the udp socket
-        clients.push(client);
+        clients= [client];
         this.cache[key] = clients;
       this.createNewUdpBind(ip, clients, port);
     }
   
   }
     createNewUdpBind(ip: string, clients: any[], port: any) {
-        var udp = dgram.createSocket("udp4", { reuseAddr: true });
+        var udp = dgram.createSocket({ type: "udp4", reuseAddr: true });
         udp.on('listening', function () {
-            var address = udp.address();
+            let address = udp.address() as AddressInfo;
             console.log('UDP Client listening on ' + address.address + ":" + address.port);
             udp.setBroadcast(true);
             udp.setMulticastTTL(64);
             udp.addMembership(ip);
         });
-        udp.on("message", function (msg: string, rinfo: { address: any; port: any; }) {
+        udp.on("message", (msg: Buffer, rinfo: RemoteInfo) => {
             clients.forEach(clientHandler => {
                 clientHandler.emit("dgram-message", {
                     msg: msg.toString("ascii"),
