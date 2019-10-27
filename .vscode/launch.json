@@ -26,7 +26,7 @@
             "name": "client2",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": ["${workspaceFolder}/out/**/*.js"],
-            "program": "${workspaceFolder}/lib/client.mts"
+            "program": "${workspaceFolder}/lib/client.ts"
         },
         {
             "type": "node",

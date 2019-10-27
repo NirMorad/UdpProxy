@@ -4,10 +4,10 @@ import sio from "socket.io";
 import { AddressInfo } from "net";
 
 export class Proxy {
-  cache: {[id:string]:[sio.Socket] };
+  cache: {[id:string]:[sio.Socket] } = {};
+  socketCache: {[id:string]: string } = {};
 
   constructor() {
-    this.cache  = {};
     let server = http.createServer();
     let so = sio(server);
 
@@ -15,11 +15,25 @@ export class Proxy {
     io.on("connect", socket => {
       this.bind(socket);
       socket.on("disconnect",(reason) => {
-        console.log(socket);
+        this.deleteSocket(socket);
       });
     });
 
     server.listen(8080);
+  }
+
+  private deleteSocket(socket: sio.Socket) {
+    if (this.socketCache[socket.id]) {
+      let key = this.socketCache[socket.id];
+      if (this.cache[key]) {
+        let sockets = this.cache[key];
+        var i = sockets.indexOf(socket);
+        sockets.splice(i, 1);
+        if (sockets.keys.length == 0) {
+          delete this.cache[key];
+        }
+      }
+    }
   }
 
   bind(client: sio.Socket) {
@@ -36,15 +50,16 @@ export class Proxy {
     const ip = message.ip;
     const key = ip + "-" + port;
     
+    this.socketCache[client.id] = key;
     let clients : [sio.Socket] ;
     if (this.cache[key]) {
         clients = this.cache[key];
         clients.push(client);
     }else {
         //create the udp socket
-        clients= [client];
+        clients = [client];
         this.cache[key] = clients;
-      this.createNewUdpBind(ip, clients, port);
+        this.createNewUdpBind(ip, clients, port);
     }
   
   }
