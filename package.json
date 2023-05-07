@@ -12,7 +12,7 @@
   "author": "Nir Morad",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "typescript": "^3.6.4"
   },
   "devDependencies": {
